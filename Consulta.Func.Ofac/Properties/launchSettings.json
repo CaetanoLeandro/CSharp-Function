@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Consulta.Func.Ofac": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7218",
+      "launchBrowser": false
+    }
+  }
+}
