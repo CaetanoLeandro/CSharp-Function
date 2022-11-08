@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
 {
-    public class SdnLoteRepositorio : SqlServerExtensions, Interfaces.ISdnLoteRepositorio
+    public class SdnLoteRepositorio : SqlServerExtensions, ISdnLoteRepositorio
     {
         protected DataBaseConfig _config;
 
@@ -18,19 +18,37 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
             _config = options.Value;
         }
 
-        public int Adicionar(SdnLote obj)
+        public int Adicionar(SdnLote sdnLote)
         {
             var ret = 0;
             var db = new ObjectDB("ofac.usp_SdnLote_Adicionar", OperationType.Insert, _config.Safe2PayDB);
-            
-            db.AddParameter("@Descricao",obj.Descricao);
-            db.AddParameter("@EhConsolidado",obj.EhConsolidado);
-            db.AddParameter("@DataPublicacao",obj.DataPublicacao);
-            db.AddParameter("@DataCriacao", DateTime.Now.ToBrazilTime());
 
-            db.AddParameter("@Retorno", 0, ParameterDirection.Output);
-            
-            db.Execute();
+             db.AddParameter("@Descricao", sdnLote.Descricao);
+             db.AddParameter("@EhConsolidado", sdnLote.EhConsolidado);
+             db.AddParameter("@DataPublicacao", sdnLote.DataPublicacao);
+             db.AddParameter("@DataCriacao", DateTime.Now.ToBrazilTime());
+
+             db.AddParameter("@Retorno", 0, ParameterDirection.Output);
+
+             db.Execute();
+
+            if (db.Result != null)
+                ret = (int)db.Result;
+
+            return ret;
+        }
+
+        public async Task<int> AdicionarLista(List<SdnLote> sdn)
+        {
+            var ret = 0;
+            var db = new ObjectDB("ofac.usp_SdnLote_AdicionarEmLote", OperationType.Insert, _config.Safe2PayDB);
+
+            await db.AddParameterSqlTableValue("@Data","ofac.SdnLote", sdn);
+
+
+            await db.AddParameterSql("@Retorno", 0, ParameterDirection.Output);
+            await db.ExecuteAsync();
+
 
             if (db.Result != null)
                 ret = (int)db.Result;
@@ -42,9 +60,9 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
         {
             SdnLote ret = null;
             var db = new ObjectDB("ofac.usp_SdnLote_BuscarPorDataPublicacao", OperationType.Insert, _config.Safe2PayDB);
-            
-            db.AddParameter("@EhConsolidado",obj.EhConsolidado);
-            db.AddParameter("@DataPublicacao",obj.DataPublicacao);
+
+            db.AddParameter("@EhConsolidado", obj.EhConsolidado);
+            db.AddParameter("@DataPublicacao", obj.DataPublicacao);
 
             db.Execute();
 
@@ -56,7 +74,7 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
                     ret = map(dt.Rows[0]);
                 }
             }
-             return ret;
+            return ret;
         }
 
         /// <summary>

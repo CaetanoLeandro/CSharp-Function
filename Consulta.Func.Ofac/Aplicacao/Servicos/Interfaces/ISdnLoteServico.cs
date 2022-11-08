@@ -8,5 +8,5 @@ public interface ISdnLoteServico
 
     public int BuscarPorLote(SdnLote obj);
 
-    public bool AtualizarRegistrosDaBase(bool EhConsolidado);
+    public Task <bool> AtualizarRegistrosDaBase(bool EhConsolidado);
 }

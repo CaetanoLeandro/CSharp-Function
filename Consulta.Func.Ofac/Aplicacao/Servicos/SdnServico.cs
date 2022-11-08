@@ -8,11 +8,11 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
 {
     public class SdnServico : ServicoBase, ISdnServico
     {
-        private readonly IListaOfacSdnRepositorio _dsnRepositorio;
-       
+        private readonly ISdnRepositorio _dsnRepositorio;
+
         private readonly AppConfig _config;
 
-        public SdnServico(IListaOfacSdnRepositorio sdnRepositorio, IOptions<AppConfig> options)
+        public SdnServico(ISdnRepositorio sdnRepositorio, IOptions<AppConfig> options)
         {
             _dsnRepositorio = sdnRepositorio;
             _config = options.Value;
@@ -25,9 +25,17 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
             int idLista = _dsnRepositorio.Adicionar(obj);
 
             return idLista;
+        }    
+        public async Task <bool> AdicionarLote(List<Sdn> lista)
+        {
+           // lista.Validar();
+
+            bool idLista = await _dsnRepositorio.AdicionarLote(lista);
+
+            return idLista;
         }
-        
-        
+
+
         public void AdicionarLista(List<Sdn> lista)
         {
             lista.ForEach(listaOfac =>

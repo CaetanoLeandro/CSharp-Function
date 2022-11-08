@@ -41,7 +41,7 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
         }
 
         
-        public bool AtualizarRegistrosDaBase(bool EhConsolidado)
+        public async Task <bool> AtualizarRegistrosDaBase(bool EhConsolidado)
         {
             var ret = false;
         
@@ -55,11 +55,10 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
             var listaMapeadaParaAtualizar = SdnMapper.ConverterListaOfacSdnDtoParaListaOfacSdn
                 (listaAtualizadaSdnLote.sdnEntry, idSdnLote);
            
-            _sdnServico.AdicionarLista(listaMapeadaParaAtualizar);
+
+            return await _sdnServico.AdicionarLote(listaMapeadaParaAtualizar);
         
-            ret = true;
-        
-            return ret;
+     
         }
 
         private SdnListDto BuscarListaSdnNaOfac(bool EhConsolidado)

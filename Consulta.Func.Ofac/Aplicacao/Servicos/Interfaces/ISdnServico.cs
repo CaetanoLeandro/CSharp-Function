@@ -7,4 +7,5 @@ public interface ISdnServico
     public int Adicionar(Sdn obj);
 
     public void AdicionarLista(List<Sdn> lista);
+    public Task<bool> AdicionarLote(List<Sdn> lista);
 }
