@@ -8,13 +8,13 @@ using Consulta.Func.Ofac.Aplicacao.Servicos.Interfaces;
 using Consulta.Func.Ofac.Dominio.Entidades;
 using Consulta.Func.Ofac.Infra.BancoDados.Repositorios.Interfaces;
 using Microsoft.Extensions.Options;
-//using Consulta.Func.Ofac.Aplicacao.Mapper;
 
 namespace Consulta.Func.Ofac.Aplicacao.Servicos
 {
     public class ListaOfacSdnServico : ServicoBase, IListaOfacSdnServico
     {
         private readonly IListaOfacSdnRepositorio _dsnRepositorio;
+        private readonly IListaOfacSdnLoteRepositorio _dsnLoteRepositorio;
         private readonly AppConfig _config;
 
         public ListaOfacSdnServico(IListaOfacSdnRepositorio listaOfacSdnRepositorio, IOptions<AppConfig> options)
@@ -23,11 +23,26 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
             _config = options.Value;
         }
 
+        public ListaOfacSdnServico(IListaOfacSdnLoteRepositorio listaOfacSdnLoteRepositorio, IOptions<AppConfig> options)
+        {
+            _dsnLoteRepositorio = listaOfacSdnLoteRepositorio;
+            _config = options.Value;
+        }
+
         public int Adicionar(ListaOfacSdn obj)
         {
             obj.Validar();
 
             int idLista = _dsnRepositorio.Adicionar(obj);
+
+            return idLista;
+        }
+
+        public int BuscarPorLote(SdnLote obj)
+        {
+            obj.Validar();
+
+            int idLista = _dsnLoteRepositorio.BuscarPorLote(obj);
 
             return idLista;
         }
@@ -41,7 +56,7 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
 
             //Mapeia o retorno da lista p/ DTO  p/ fazer a inclusão na base
             var listaMapeadaParaAtualizar = new List<ListaOfacSdn>();
-            //ListaSdnMapper.ConverterListaOfacSdnDtoParaListaOfacSdn(listaAtualizadaOpacSdn);
+            //SdnMapper.ConverterListaOfacSdnDtoParaListaOfacSdn(listaAtualizadaOpacSdn);
             AdicionarLista(listaMapeadaParaAtualizar);
 
             ret = true;
@@ -61,8 +76,10 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
 
             string result = response.Content.ReadAsStringAsync().Result;
 
-               
-            result = result.Replace("\r\n<sdnList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/sdnList.xsd\">", "<sdnList>");
+
+            result = result.Replace(
+                "\r\n<sdnList xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://tempuri.org/sdnList.xsd\">",
+                "<sdnList>");
             result = result.Replace("<?xml version=\"1.0\" standalone=\"yes\"?>", "");
             result = result.Replace("</xml>", "");
 
@@ -82,19 +99,6 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
             return Listas;
         }
 
-        // public ListaOfacSdn BuscarPorIdSdn(int idSdn)
-        // {
-        //     if (idSdn == 0)
-        //         Notificar("O Id deve ser informado.");
-        //
-        //     return _dsnRepositorio.BuscarPorIdSdn(idSdn);
-        // }
-        //
-        // public List<ListaOfacSdn> Listar()
-        // {
-        //     return _dsnRepositorio.Listar();
-        // }
-
         private void AdicionarLista(List<ListaOfacSdn> lista)
         {
             lista.ForEach(listaOfac =>
@@ -108,6 +112,21 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
                 }
             });
         }
+
+        private void BuscarPorLote(List<SdnLote> lista)
+        {
+            lista.ForEach(sdnLote =>
+            {
+                try
+                {
+                    BuscarPorLote(sdnLote);
+                }
+                catch (Exception)
+                {
+                }
+            });
+        }
+
         protected T FromXml<T>(String xml)
         {
             T returnedXmlClass = default(T);
@@ -123,7 +142,6 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
                     }
                     catch (InvalidOperationException)
                     {
-                        // String passed is not XML, simply return defaultXmlClass
                     }
                 }
             }

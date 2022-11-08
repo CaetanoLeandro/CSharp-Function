@@ -4,6 +4,6 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios.Interfaces
 {
     public interface IListaOfacSdnLoteRepositorio
     {
-        public int BuscarPorLote(ListaOfacSdn obj);
+        public int BuscarPorLote(SdnLote obj);
     }
 }

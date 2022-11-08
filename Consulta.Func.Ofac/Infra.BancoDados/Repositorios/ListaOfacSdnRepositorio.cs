@@ -22,15 +22,15 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
         {
             var ret = 0;
             var db = new ObjectDB("", OperationType.Insert, _config.Safe2PayDB);
-            
-            db.AddParameter("@IdSdn",obj.IdSdn);
-            db.AddParameter("@NomeSdn",obj.NomeSdn);
-            db.AddParameter("@TipoSdn",obj.TipoSdn);
-            db.AddParameter("@Program",obj.Program);
+
+            db.AddParameter("@IdSdn", obj.IdSdn);
+            db.AddParameter("@NomeSdn", obj.NomeSdn);
+            db.AddParameter("@TipoSdn", obj.TipoSdn);
+            db.AddParameter("@Program", obj.Program);
             db.AddParameter("@CreatedDate", DateTime.Now.ToBrazilTime());
 
             db.AddParameter("@Retorno", 0, ParameterDirection.Output);
-            
+
             db.Execute();
 
             if (db.Result != null)
@@ -38,66 +38,5 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
 
             return ret;
         }
-
-        // public ListaOfacSdn BuscarPorIdSdn(int IdSdn)
-        // {
-        //     ListaOfacSdn ret = null;
-        //     
-        //     var db = new ObjectDB("", OperationType.Insert, _config.Safe2PayDB);
-        //     
-        //     db.AddParameter("@IdSdn", IdSdn);
-        //
-        //     db.Execute();
-        //
-        //     if (db.Result != null)
-        //     {
-        //         var dt = (DataTable)db.Result;
-        //         if (dt.Rows.Count > 0)
-        //         {
-        //             ret = map(dt.Rows[0]);
-        //         }
-        //     }
-        //     return ret;
-        // }
-
-        // public List<ListaOfacSdn> Listar()
-        // {
-        //     List<ListaOfacSdn> list = null;
-        //     
-        //     var db = new ObjectDB("", OperationType.Insert, _config.Safe2PayDB);
-        //
-        //     db.Execute();
-        //
-        //     if (db.Result != null)
-        //     {
-        //         var dt = (DataTable)db.Result;
-        //         if (dt.Rows.Count > 0)
-        //         {
-        //             list = new();
-        //
-        //             dt.AsEnumerable().Cast<DataRow>().ToList().ForEach(row => { list.Add(map(row)); });
-        //         }
-        //     }
-        //
-        //     return list;
-        // }
-        //
-        // /// <summary>
-        // /// Faz o mapeamento do objeto.
-        // /// </summary>
-        // /// <param name="row"></param>
-        // /// <returns></returns>
-        // private static ListaOfacSdn map(DataRow row)
-        // {
-        //     ListaOfacSdn result = new(
-        //         row.Get<string>("IdSdn"),
-        //         row.Get<string>("NomeSdn"),
-        //         row.Get<string>("TipoSdn"),
-        //         row.Get<string>("Program")
-        //     );
-        //
-        //     return result;
-        // }
-
     }
 }

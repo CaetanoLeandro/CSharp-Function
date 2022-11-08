@@ -18,15 +18,14 @@ namespace Consulta.Func.Ofac.Infra.BancoDados.Repositorios
             _config = options.Value;
         }
 
-        public int BuscarPorLote(ListaOfacSdn obj)
+        public int BuscarPorLote(SdnLote obj)
         {
             var ret = 0;
             var db = new ObjectDB("", OperationType.Insert, _config.Safe2PayDB);
             
-            db.AddParameter("@IdSdnExterno",obj.IdSdn);
-            db.AddParameter("@IdSdnLote",obj.IdSdn);
-            db.AddParameter("@Nome",obj.NomeSdn);
-            db.AddParameter("@Tipo",obj.TipoSdn);
+            db.AddParameter("@Descricao",obj.Descricao);
+            db.AddParameter("@EhConsolidado",obj.EhConsolidado);
+            db.AddParameter("@DataPublicacao",obj.DataPublicacao);
             db.AddParameter("@DataCriacao", DateTime.Now.ToBrazilTime());
 
             db.AddParameter("@Retorno", 0, ParameterDirection.Output);

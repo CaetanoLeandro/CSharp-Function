@@ -6,8 +6,5 @@ public interface IListaOfacSdnServico
 {
     public int Adicionar(ListaOfacSdn obj);
 
-    // public ListaOfacSdn BuscarPorIdSdn(int idSdn);
-    // public List<ListaOfacSdn> Listar();
-
     public bool AtualizarRegistrosDaBase();
 }

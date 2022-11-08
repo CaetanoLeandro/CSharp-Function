@@ -3,7 +3,7 @@ using Consulta.Func.Ofac.Dominio.Entidades;
 
 namespace Consulta.Func.Ofac.Aplicacao.Mapper
 {
-    public static class ListaSdnMapper
+    public static class SdnMapper
     {
         public static List<ListaOfacSdn> ConverterListaOfacSdnDtoParaListaOfacSdn(List<SdnEntryDto> list)
         {
@@ -12,7 +12,7 @@ namespace Consulta.Func.Ofac.Aplicacao.Mapper
                 NomeSdn = x.firstName,
                 IdSdn = x.uid,
                 TipoSdn = x.sdnType,
-                Program = x.ProgramList,
+                Program = x.ProgramList
 
             }).ToList();
         }

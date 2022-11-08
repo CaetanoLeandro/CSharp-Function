@@ -1,6 +1,4 @@
-using System;
 using Consulta.Func.Ofac.Aplicacao.Servicos.Interfaces;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
