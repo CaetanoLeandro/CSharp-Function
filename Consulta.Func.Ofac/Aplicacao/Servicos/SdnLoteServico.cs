@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using Consulta.Func.Ofac.Aplicacao.Config;
 using Consulta.Func.Ofac.Aplicacao.DTO;
+using Consulta.Func.Ofac.Aplicacao.Mapper;
 using Consulta.Func.Ofac.Aplicacao.Servicos.Interfaces;
 using Consulta.Func.Ofac.Dominio.Entidades;
 using Consulta.Func.Ofac.Infra.BancoDados.Repositorios.Interfaces;
@@ -11,68 +12,66 @@ using Microsoft.Extensions.Options;
 
 namespace Consulta.Func.Ofac.Aplicacao.Servicos
 {
-    public class ListaOfacSdnServico : ServicoBase, IListaOfacSdnServico
+    public class SdnLoteServico : ServicoBase, ISdnLoteServico
     {
-        private readonly IListaOfacSdnRepositorio _dsnRepositorio;
-        private readonly IListaOfacSdnLoteRepositorio _dsnLoteRepositorio;
+        private readonly ISdnLoteRepositorio _dsnLoteRepositorio;
+        private readonly ISdnServico _sdnServico;
+       
         private readonly AppConfig _config;
 
-        public ListaOfacSdnServico(IListaOfacSdnRepositorio listaOfacSdnRepositorio, IOptions<AppConfig> options)
+        public SdnLoteServico(ISdnLoteRepositorio sdnLoteRepositorio, ISdnServico sdnServico, IOptions<AppConfig> options)
         {
-            _dsnRepositorio = listaOfacSdnRepositorio;
+            _dsnLoteRepositorio = sdnLoteRepositorio;
+            _sdnServico = sdnServico;
             _config = options.Value;
         }
 
-        public ListaOfacSdnServico(IListaOfacSdnLoteRepositorio listaOfacSdnLoteRepositorio, IOptions<AppConfig> options)
-        {
-            _dsnLoteRepositorio = listaOfacSdnLoteRepositorio;
-            _config = options.Value;
-        }
-
-        public int Adicionar(ListaOfacSdn obj)
+        public int Adicionar(SdnLote obj)
         {
             obj.Validar();
 
-            int idLista = _dsnRepositorio.Adicionar(obj);
+            int idLista = _dsnLoteRepositorio.Adicionar(obj);
 
             return idLista;
         }
 
         public int BuscarPorLote(SdnLote obj)
         {
-            obj.Validar();
-
-            int idLista = _dsnLoteRepositorio.BuscarPorLote(obj);
-
-            return idLista;
+            throw new NotImplementedException();
         }
 
-        public bool AtualizarRegistrosDaBase()
+        
+        public bool AtualizarRegistrosDaBase(bool EhConsolidado)
         {
             var ret = false;
-
+        
             //Requisição donwload lista site OPAC
-            var listaAtualizadaOpacSdn = AlualizarLista();
+            var listaAtualizadaSdnLote = BuscarListaSdnNaOfac(EhConsolidado);
 
+            var sdnLote = SdnLoteMapper.ConverterListaOfacSdnParaListaOfacSdnDto(listaAtualizadaSdnLote.publshInformation,
+                    "teste", EhConsolidado);
+            var idSdnLote = Adicionar(sdnLote);
             //Mapeia o retorno da lista p/ DTO  p/ fazer a inclusão na base
-            var listaMapeadaParaAtualizar = new List<ListaOfacSdn>();
-            //SdnMapper.ConverterListaOfacSdnDtoParaListaOfacSdn(listaAtualizadaOpacSdn);
-            AdicionarLista(listaMapeadaParaAtualizar);
-
+            var listaMapeadaParaAtualizar = SdnMapper.ConverterListaOfacSdnDtoParaListaOfacSdn
+                (listaAtualizadaSdnLote.sdnEntry, idSdnLote);
+           
+            _sdnServico.AdicionarLista(listaMapeadaParaAtualizar);
+        
             ret = true;
-
+        
             return ret;
         }
 
-        private SdnListDto AlualizarLista()
+        private SdnListDto BuscarListaSdnNaOfac(bool EhConsolidado)
         {
             SdnListDto Listas = null;
 
+            var url = EhConsolidado ? _config.EndPointListaSdn : _config.EndPointListaNaoSdn;
             using HttpClient client = new();
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            HttpResponseMessage response = client.GetAsync(_config.EndPointListaSdn).Result;
+            HttpResponseMessage response = client.GetAsync(url).Result;
 
             string result = response.Content.ReadAsStringAsync().Result;
 
@@ -97,34 +96,6 @@ namespace Consulta.Func.Ofac.Aplicacao.Servicos
             }
 
             return Listas;
-        }
-
-        private void AdicionarLista(List<ListaOfacSdn> lista)
-        {
-            lista.ForEach(listaOfac =>
-            {
-                try
-                {
-                    Adicionar(listaOfac);
-                }
-                catch (Exception)
-                {
-                }
-            });
-        }
-
-        private void BuscarPorLote(List<SdnLote> lista)
-        {
-            lista.ForEach(sdnLote =>
-            {
-                try
-                {
-                    BuscarPorLote(sdnLote);
-                }
-                catch (Exception)
-                {
-                }
-            });
         }
 
         protected T FromXml<T>(String xml)

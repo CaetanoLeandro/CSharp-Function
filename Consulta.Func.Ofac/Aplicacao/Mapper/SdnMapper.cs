@@ -5,27 +5,28 @@ namespace Consulta.Func.Ofac.Aplicacao.Mapper
 {
     public static class SdnMapper
     {
-        public static List<ListaOfacSdn> ConverterListaOfacSdnDtoParaListaOfacSdn(List<SdnEntryDto> list)
+        public static List<Sdn> ConverterListaOfacSdnDtoParaListaOfacSdn(List<SdnEntryDto> list, int idSdnLote)
         {
-            return list.Select(x => new ListaOfacSdn
+            return list.Select(x => new Sdn
             {
-                NomeSdn = x.firstName,
-                IdSdn = x.uid,
+                NomeSdn = x.firstName + " " + x.lastName,
+                IdSdnExterno = x.uid,
                 TipoSdn = x.sdnType,
-                Program = x.ProgramList
+                Program = x.ProgramList,
+                IdSdnLote = idSdnLote
 
             }).ToList();
         }
 
-        public static ListaOfacSdn ConverterListaOfacSdnParaListaOfacSdnDto(SdnEntryDto obj)
+        public static Sdn ConverterListaOfacSdnParaListaOfacSdnDto(SdnEntryDto obj,int idSdnLote)
         {
-            return new ListaOfacSdn
+            return new Sdn
             {
-                NomeSdn = obj.firstName,
-                IdSdn = obj.uid,
+                NomeSdn = obj.firstName + " " + obj.lastName,
+                IdSdnExterno = obj.uid,
                 TipoSdn = obj.sdnType,
-                Program = obj.ProgramList
-
+                Program = obj.ProgramList,
+                IdSdnLote = idSdnLote
             };
         }
     }

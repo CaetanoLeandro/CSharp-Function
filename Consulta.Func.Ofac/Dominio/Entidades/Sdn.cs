@@ -3,44 +3,45 @@ using Consulta.Func.Ofac.Dominio.Validacao;
 
 namespace Consulta.Func.Ofac.Dominio.Entidades
 {
-    public class ListaOfacSdn : EntidadeBase
+    public class Sdn : EntidadeBase
     {
         public string NomeSdn { get; set; }
-        public string IdSdn { get; set; }
+        public string IdSdnExterno { get; set; }
+        public int IdSdnLote { get; set; }
         public string TipoSdn { get; set; }
 
         public List<ListaProgramDto> Program { get; set; }
 
 
-        public ListaOfacSdn() 
+        public Sdn() 
         {
         }
 
-        public ListaOfacSdn(string nomeSdn, string idSdn, string tipoSdn, List<ListaProgramDto> program)
+        public Sdn(string nomeSdn, string idSdnExterno, string tipoSdn, List<ListaProgramDto> program)
         {
             NomeSdn = nomeSdn;
-            IdSdn = idSdn;
+            IdSdnExterno = idSdnExterno;
             TipoSdn = tipoSdn;
             Program = program;
 
             Validar();
         }
 
-        public ListaOfacSdn(string nomeSdn, string idSdn, string tipoSdn, string programa)
+        public Sdn(string nomeSdn, string idSdnExterno, string tipoSdn, string programa)
         {
             throw new NotImplementedException();
         }
 
         public void Validar()
         {
-            ValidationResult = new ListaOfacSdnValidacao().Validate(this);
+            ValidationResult = new SdnValidacao().Validate(this);
             if (!ValidationResult.IsValid)
                 Notificar(ValidationResult);
         }
         
         public sealed override bool EhValido()
         {
-            ValidationResult = new ListaOfacSdnValidacao().Validate(this);
+            ValidationResult = new SdnValidacao().Validate(this);
             return ValidationResult.IsValid;
         }
     }

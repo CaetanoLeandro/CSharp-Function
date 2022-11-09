@@ -8,6 +8,7 @@ namespace Consulta.Func.Ofac.Aplicacao.DTO
         [XmlElement("sdnEntry", typeof(SdnEntryDto))]
         public List<SdnEntryDto> sdnEntry { get; set; }
 
-        public PublshInformationDto PublshInformation { get; set; }
+        [XmlElement("publshInformation", typeof(PublshInformationDto))]
+        public PublshInformationDto publshInformation { get; set; }
     }
 }

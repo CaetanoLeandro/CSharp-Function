@@ -3,11 +3,11 @@ using FluentValidation;
 
 namespace Consulta.Func.Ofac.Dominio.Validacao;
 
-public class ListaOfacSdnValidacao : AbstractValidator<ListaOfacSdn>
+public class SdnValidacao : AbstractValidator<Sdn>
 {
-    public ListaOfacSdnValidacao()
+    public SdnValidacao()
     {
-        RuleFor(obj => obj.IdSdn)
+        RuleFor(obj => obj.IdSdnExterno)
             .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido.");
 
         RuleFor(obj => obj.NomeSdn)

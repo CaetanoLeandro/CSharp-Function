@@ -10,7 +10,8 @@ namespace Consulta.Func.Ofac.Infra.BancoDados
     {
         public static void RegistrarRepositorios(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IListaOfacSdnRepositorio, ListaOfacSdnRepositorio>();
+            services.AddScoped<IListaOfacSdnRepositorio, SdnRepositorio>();
+            services.AddScoped<ISdnLoteRepositorio, SdnLoteRepositorio>();
             services.Configure<DataBaseConfig>(configuration.GetSection(key: nameof(DataBaseConfig)));
         }
     }

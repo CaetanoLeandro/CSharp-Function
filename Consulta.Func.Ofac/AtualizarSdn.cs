@@ -4,18 +4,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Consulta.Func.Ofac
 {
-    public class AtualizarListaOfac
+    public class AtualizarSdn
     {
         private readonly ILogger _logger;
-        private readonly IListaOfacSdnServico _listaOfacSdnServico;
+        private readonly ISdnLoteServico _sdnLoteServico;
 
-        public AtualizarListaOfac(ILoggerFactory loggerFactory, IListaOfacSdnServico listaOfacSdnServico)
+        public AtualizarSdn(ILoggerFactory loggerFactory, ISdnLoteServico sdnLoteServico)
         {
-            _logger = loggerFactory.CreateLogger<AtualizarListaOfac>();
-            _listaOfacSdnServico = listaOfacSdnServico;
+            _logger = loggerFactory.CreateLogger<AtualizarSdn>();
+            _sdnLoteServico = sdnLoteServico;
         }
 
-        [Function("FunctionAtualizarBancoAgencia")]
+        [Function("FunctionAtualizarListaOfac")]
         public void Run([TimerTrigger("0 */5 * * * *"
 
                 , RunOnStartup = true
@@ -26,7 +26,8 @@ namespace Consulta.Func.Ofac
         {
             _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             _logger.LogInformation($"Next timer schedule at: {myTimer.ScheduleStatus.Next}");
-            _listaOfacSdnServico.AtualizarRegistrosDaBase();
+            _sdnLoteServico.AtualizarRegistrosDaBase(true);
+            _sdnLoteServico.AtualizarRegistrosDaBase(false);
         }
     }
 }

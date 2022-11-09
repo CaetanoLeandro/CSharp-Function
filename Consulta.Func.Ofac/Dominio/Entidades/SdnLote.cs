@@ -41,5 +41,4 @@ namespace Consulta.Func.Ofac.Dominio.Entidades
             return ValidationResult.IsValid;
         }
     }
-
 }

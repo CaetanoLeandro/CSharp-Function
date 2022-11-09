@@ -13,7 +13,8 @@ namespace Consulta.Func.Ofac.Aplicacao
     {
         public static void RegistrarServicos(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IListaOfacSdnServico, ListaOfacSdnServico>();
+            services.AddScoped<ISdnServico, SdnServico>();
+            services.AddScoped<ISdnLoteServico, SdnLoteServico>();
             services.AddScoped<INotificador, Notificador>();
             services.Configure<AppConfig>(configuration.GetSection(key: nameof(AppConfig)));
 
